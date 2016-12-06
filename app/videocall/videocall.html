@@ -1,0 +1,52 @@
+<ui-view name="header"></ui-view>
+<div id="videos">
+            <div id="videoBackground" ng-repeat="(key,value) in users">
+                <video id="video-{{key}}" autoplay="true" ng-src="{{users[key].video[0]}}" style="" showonhover></video>
+                <div id="videoControlUser" hideonleave>
+                    <!--button class="sendFile btn btn-default" ng-click="room.sendFile(key)">
+                            <i class="fa fa-send-o fa-2x"></i>
+                    </button-->
+                </div>
+                <div id="videoControlMod" ng-if="room.status.mod">
+                </div>
+            </div>
+        </div>
+        <div id="panel">
+            <h2>Users List</h2>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td><i class="action fa fa-user" ng-class="room.status.mod ? 'text-danger' : ''"></i> {{username}}</td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <i class="action fa" ng-class="room.status.smuted ? 'fa-microphone-slash' : 'fa-microphone'" ng-click="room.admin('smute', username)"></i></td><td><i class="action fa" ng-class="room.status.vmuted ? 'fa-eye-slash' : 'fa-eye'" ng-click="room.admin('vmute', username)"></i>
+                        </td>
+                    </tr>
+                    <tr ng-repeat="(key, value) in users">
+                        <td><i class="action fa fa-user" ng-class="value.status.mod ? 'text-danger' : ''"></i> {{key}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><i ng-if="room.status.mod" ng-click="room.admin('kick', key)" class="action fa fa-times text-danger"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="bottom">
+             <div id="messageLog"><span ng-repeat="msg in messageLog">[{{msg.time}}] <b>{{msg.user}}</b>: {{msg.msg}}<br/></span></div> 
+            <input id="messageBox" chat-input ng-model='msg' />
+            <div id="localVideoContainer">
+                <video id="localVideo" autoplay="true" muted="true" ng-src="{{localVideo}}" style="{{localVideoTransform}}" showonhover>Your browser does not support HTML5 video.</video>
+                <div id="localControl" hideonleave>
+                    <button class="videoMute btn btn-default" ng-click="room.admin('vmute', username)">
+                        <i class="fa fa-eye fa-2x" ng-if="!room.status.vmuted" title="stop image"></i>
+                        <i class="fa fa-eye-slash fa-2x" ng-if="room.status.vmuted" title="send image"></i>
+                    </button>
+                    <button class="audioMute btn btn-default" ng-click="room.admin('smute', username)">
+                        <i class="fa fa-microphone fa-2x" ng-if="!room.status.smuted" title="stop audio"></i>
+                        <i class="fa fa-microphone-slash fa-2x" ng-if="room.status.smuted" title="send audio"></i>
+                    </button>
+                </div>
+            </div>
+        </div>

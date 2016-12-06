@@ -1,0 +1,28 @@
+{
+  "name": "video-chat",
+  "version": "1.0.0",
+  "description": "This is video-chat like skype call.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sagar32/video-chat.git"
+  },
+  "author": "Sagarkumar chopada",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sagar32/video-chat/issues"
+  },
+  "homepage": "https://github.com/sagar32/video-chat#readme",
+  "dependencies": {
+    "angular": "^1.5.9",
+    "angular-ui-router": "^0.3.2",
+    "bootstrap": "^3.3.7",
+    "express": "^4.14.0",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.1.1",
+    "socket.io": "^1.7.1"
+  }
+}

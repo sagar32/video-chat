@@ -1,0 +1,139 @@
+body {
+	font-family: Calibri Light;
+	background:url(../images/bg.jpg) #DDD no-repeat left top;
+	background-size: 100%;
+	background-attachment: fixed;
+	padding-top: 51px;
+	-webkit-transition: background 1.5s linear;
+	-moz-transition: background 1.5s linear;
+	-o-transition: background 1.5s linear;
+	-ms-transition: background 1.5s linear;
+	transition: background 1.5s linear;
+}
+#content {
+	background-color: rgba(255,255,255,0.7);
+	margin: auto;
+	position: absolute;
+	top: 45px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	min-width:500px;
+	min-height:300px;
+	max-width:800px;
+	max-height:500px;
+}
+.form-control {
+	margin: auto;
+	max-width:300px;
+	margin-top: 5px;
+}
+.btn-large {
+	font-size: 175%;
+	margin: auto;
+	width:200px;
+	height:100px;		
+	position: absolute;
+	top: 50%;
+	bottom: 0px;
+	left: 0px;
+	right: 0px
+}
+.list-group {
+	top: 100px;
+	position: absolute;
+	width:300px;
+	background-color: rgba(255,255,255,0.5)
+}
+#title {
+	font-size: 300%;
+	margin: auto;
+	margin-top: 10%;
+	text-align: center;
+}
+#bottom {
+	width:100%;
+	height:240px;
+	position: absolute;
+	bottom:0;
+	right:0;
+}
+#messageLog {
+	width: -webkit-calc(100% - 320px);
+	height:90%;
+	background-color: rgba(255,255,255,0.5);
+	resize: none;
+	overflow-y: auto;
+	scroll-top: 10000;
+}
+#messageBox {
+	width: -webkit-calc(100% - 320px);
+	height:10%;
+	position: absolute;
+	bottom:0;
+	left:0;
+}
+video {
+	width:auto;
+	height:auto;
+}
+#localVideo {
+	width:320px;
+	height:240px;
+	position: absolute;
+	bottom:0;
+	right:0;
+}
+#localVideoContainer {
+	position: absolute;
+	bottom:0;
+	right:0;
+}
+#localControl {
+	width:320px;
+	height:240px;
+	background: black;
+	position: absolute;
+	bottom:0;
+	right:0;
+	opacity:.5;
+	display: none;
+}
+.videoMute {
+	margin: auto;	
+	position: absolute;
+	bottom: 10%;
+	left: 31%;
+	width: 62px;
+	height: 62px;
+}
+.audioMute {
+	margin: auto;
+	position: absolute;
+	bottom: 10%;
+	right: 31%;
+	width: 62px;
+	height: 62px;
+}
+.fa {
+	line-height: inherit;
+}
+#videos {
+	float: center;
+	display: inline-block;
+	margin: 0 1em 0 1em;
+}
+#videoBackground {
+	float: left;
+	margin: 10px;
+}
+#panel {
+	float: right;
+	background-color: rgba(200,200,255,0.5);
+	height: -webkit-calc(100% - 240px);
+	width: 320px;
+	padding: 20px;
+}
+.action {
+	cursor: pointer;
+}
