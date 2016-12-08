@@ -137,3 +137,27 @@ video {
 .action {
 	cursor: pointer;
 }
+
+/*=======================Log in Page===============================*/
+.login_content { margin-top: 7%; }
+.login_title { color: #fff; width: 100%; display: inline-block; }
+.login_title h1 { color: #fff; margin: 0; text-align: center; }
+.login_title p { color: #fff; padding: 5px 0; font-size: 40px; text-align: center; }
+.login_form { border: 2px solid #fff; border-radius: 4px; padding: 10px; }
+.default_user { display: inline-block; padding: 10px 0; text-align: center; width: 100%; }
+.form-control1 { -moz-border-bottom-colors: none; -moz-border-left-colors: none; -moz-border-right-colors: none; -moz-border-top-colors: none; background-color: transparent; background-image: none; border-color: -moz-use-text-color -moz-use-text-color #ccc; border-image: none; border-radius: 0; border-style: none none solid; border-width: medium medium 2px; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset; color: #ffffff; display: block; font-size: 14px; height: 34px; line-height: 1.42857; padding: 6px 12px 6px 43px; transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s; width: 100%; }
+.main_form .form-group { position: relative; width: 100%; display: inline-block; padding: 10px 0; }
+.main_form .form-group > label { bottom: 12px; position: absolute; }
+.form-group img { width: 30px; }
+.main_form { display: inline-block; padding: 0 20px; width: 100%; }
+.btn-default1 { background-color: rgba(25, 114, 174, 0.8); border: medium none; color: #ffffff; font-size: 17px; margin: 19px 0; padding: 10px; text-transform: uppercase; width: 100%; }
+.btn-default1:hover { background-color: rgba(25, 114, 174, 0.9); border: medium none; color: #ffffff; }
+.btn-default2 { background-color: rgba(108, 156, 17, 0.8); border: medium none; color: #ffffff; font-size: 17px; margin: 19px 0; padding: 10px; text-transform: uppercase; width: 100%; }
+.btn-default2:hover { background-color: rgba(108, 156, 17, 0.9); border: medium none; color: #ffffff; }
+.form_signup { display: inline-block; padding: 30px 0; width: 100%; }
+.main_form .checkbox > label { color: #ffffff; }
+.form_seprator > span { background: #fff none repeat scroll 0 0; border-radius: 50px; color: #000; font-size: 20px; height: 50px; padding: 10px; position: relative; text-transform: uppercase; top: 25px; width: 50px; }
+.form_seprator { text-align: center; }
+.file_upload { padding-left: 50px; }
+.upload_icon { top: 5px; }
+.regi_form { padding: 20px 15px 10px 15px; }

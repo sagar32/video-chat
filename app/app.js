@@ -34,6 +34,54 @@ function log(type, msg) {
 }
 
 ////////////////
+//App run
+
+techhive.run(['$rootScope', '$window', '$state', '$stateParams', function ($rootScope, $window, $state, $stateParams) {
+        $rootScope.$state = $state;
+        $rootScope.$stateParams = $stateParams;
+        $rootScope.loginCheck = function () {
+            //check user is login or not
+            if ($window.localStorage.getItem("isLoginUser")) {
+                console.log('is login');
+                $window.location = "#/home";
+//            $state.go('home');
+                //console.log($window.localStorage.getItem("isLoginUser"));
+            } else {
+                console.log('is NOT login');
+                $window.location = "#/login";
+            }
+        }
+        $rootScope.loginCheck();
+        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+            if (toState.url == "/login" || toState.url == "/home") {
+                $rootScope.loginCheck();
+            }
+            console.log(toState.url);
+            console.log(toParams);
+
+        });
+        //////////
+        // return true if value is empty
+        $rootScope.isEmpty = function (value) {
+            if (value === "" || value === null || typeof value === "undefined") {
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        //////////
+        // return true if value is NotEmpty
+        $rootScope.isNotEmpty = function (value) {
+            if (value === "" || value === null || typeof value === "undefined") {
+                return false;
+            } else {
+                return true;
+            }
+        };
+    }]);
+
+////////////////
 // app router
 
 techhive.config(function ($stateProvider, $urlRouterProvider) {
@@ -44,26 +92,126 @@ techhive.config(function ($stateProvider, $urlRouterProvider) {
             // LOGIN STATES ========================================
             .state('login', {
                 url: '/login',
-                templateUrl: 'app/login/login.html'
+                templateUrl: 'app/login/login.html',
+                controller: 'login'
+            })
+            // REGISTRATION STATES ========================================
+            .state('registration', {
+                url: '/registration',
+                templateUrl: 'app/registration/registration.html',
+                controller: 'registration'
             })
             // VIDEOCALL STATES ========================================        
-            .state('videocall', {
-        url: '/videocall',
-        views: {
-            '': {templateUrl: 'app/videocall/videocall.html', controller: 'TechHive'},
-            'header@videocall': {templateUrl: 'app/header/header.html'}
-        }
+            .state('home', {
+                url: '/home',
+                views: {
+                    '': {templateUrl: 'app/home/home.html', controller: 'home'},
+                    'header@home': {templateUrl: 'app/header/header.html'}
+                }
 
 
-    });
+            });
 
 });
 
-///////////////
-// Controller
+/////////////////////
+// login controller
+techhive.controller('login', ['$scope', '$http', '$window', '$state', function ($scope, $http, $window, $state) {
+        //init
+        $scope.login = {};
 
-techhive.controller('TechHive', ['$scope', 'Room', function ($scope, Room) {
+        //login users
+        $scope.loginUser = function () {
 
+            if ($scope.isNotEmpty($scope.login.userName) && $scope.isNotEmpty($scope.login.userPassword)) {
+                console.log($scope.login);
+
+                $http.post('/loginUser', $scope.login).success(function (data) {
+                    if (data) {
+                        console.log(data);
+                        $window.localStorage.setItem("isLoginUser", JSON.stringify(data));
+                        //console.log();
+                        //$scope.onLoginSuccess();
+                        $state.go('home');
+                    } else {
+                        $scope.isError1 = 'You are not registred user, Please Sign up with us.';
+                    }
+                });
+            } else {
+                $scope.isError1 = 'Username/Email and password both required.';
+            }
+        }
+    }]);
+
+//////////////////////////
+// Registration Controller
+techhive.controller('registration', ['$scope', '$http', '$state', function ($scope, $http, $state) {
+        //init
+        $scope.register = {};
+        //register user here
+        $scope.registerUser = function () {
+            if ($scope.isNotEmpty($scope.register.email) && $scope.isNotEmpty($scope.register.username) && $scope.isNotEmpty($scope.register.password)) {
+                $scope.isError = "";
+                console.log($scope.register);
+
+                $http.post("/registerUser", $scope.register).success(function (data) {
+                    if (data) {
+                        if ($scope.file) { //check if from is valid
+                            $scope.upload($scope.file); //call upload function
+                        }
+                        $state.go('login');
+                    } else {
+                        $scope.isError = "your email or username already regitred with us."
+                    }
+                });
+            } else {
+                $scope.isError = 'All fields are required.';
+            }
+        }
+
+//image upload start
+        $scope.upload = function (file) {
+            Upload.upload({
+                url: '/uploadImg', //webAPI exposed to upload the file
+                data: {file: file} //pass file as data, should be user ng-model
+            });
+        };
+    }]);
+
+///////////////////////
+// videoCall Controller
+
+techhive.controller('home', ['$scope', '$window', 'Room', function ($scope, $window, Room) {
+        /////////////
+        // onlogin success function
+        $scope.onLoginSuccess = function () {
+            $scope.isLogin = true;
+            var index = -1;
+            $scope.activeUsername = JSON.parse($window.localStorage.getItem("isLoginUser"));
+            console.log($scope.activeUsername);
+//            socket.emit("updateOnlineStatus", {userId: $scope.activeUsername._id});
+//            socket.on("allUserRightSideList", function (allUsersList) {
+//                $scope.allUserList = allUsersList;
+//                $scope.connectedUser = [];
+////                        console.log($scope.allUserList);
+//                angular.forEach($scope.allUserList, function (value, key) {
+//                    angular.forEach($scope.activeUsername.connectedUser, function (v1, k) {
+//                        socket.emit('openRoom', v1.roomId);
+//                        if (v1.userId == value._id) {
+//                            $scope.allUserList[key].roomId = v1.roomId;
+//                            $scope.connectedUser.push(value);
+//                        }
+//                    });
+//                    if (value._id == $scope.activeUsername._id) {
+//                        index = key;
+//                    }
+//                });
+//                if (index > -1) {
+//                    $scope.allUserList.splice(index, 1);
+//                }
+//            });
+        };
+        $scope.onLoginSuccess();
         $scope.$on('localVideo.update', function (e) {
             if (Room.localStream)
                 $scope.localVideo = URL.createObjectURL(Room.localStream);
@@ -92,7 +240,7 @@ techhive.controller('TechHive', ['$scope', 'Room', function ($scope, Room) {
             e.scrollTop(e[0].scrollHeight);
         });
 
-        Room.init();
+        //Room.init();
 
         $scope.log = function (msg) {
             log('interface', msg);

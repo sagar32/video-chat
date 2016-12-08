@@ -1,0 +1,48 @@
+
+<div class="row">
+    <div class="col-md-offset-4 col-md-4">
+        <div class="login_content">
+            <div class="login_title">
+                <h1>Welcome to TechHive <br/>Video chat</h1>
+                <p><i>it's free</i></p>
+            </div>
+            <div class="login_form regi_form">
+
+                <div class="main_form">
+                    <form enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="email"><img src="app/assets/images/user.png"/></label>
+                            <input ng-model="register.username" type="text" class="form-control1" id="usr" placeholder="Enter username">
+                        </div>
+                        <div class="form-group">
+                            <label for="email"><img src="app/assets/images/mail.png"/></label>
+                            <input ng-model="register.email" type="email" class="form-control1" id="email" placeholder="Enter email">
+                        </div>
+                        <div class="form-group">
+                            <label for="password"><img src="app/assets/images/lock.png"/></label>
+                            <input ng-model="register.password" type="password" class="form-control1" id="email" placeholder="Enter password">
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd" class="upload_icon">
+
+                                <img src="app/assets/images/upload.png" ng-show="!file"/>
+                                <img class="chat-profile-pic" ng-show="!!file" ngf-thumbnail="file"/>
+
+                            </label>
+                            <input id="uploadImg" type="file" ngf-select ng-model="file" name="file"  ngf-pattern="'image/*'" accept="image/*" ngf-max-size="5MB" class="file_upload">
+
+
+                        </div>                           
+                        <br>
+                        <button type="submit" ng-click="registerUser()" class="btn btn-default2">Register</button>
+                    </form>
+
+                </div>
+            </div>
+            <div class="form_signup">
+                <a href="#/login"><button type="button" class="btn btn-default2">I have Already Account.</button></a>
+            </div>
+
+        </div>
+    </div>
+</div>

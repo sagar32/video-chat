@@ -4,15 +4,56 @@ var fs = require("fs");
 var util = require("util");
 var express = require("express");
 var app = express();
+var bodyParser = require("body-parser");
 
 var port = process.env.PORT || 4000;
 app.use(express.static(__dirname));
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
-app.get("/",function(req,res){
-    res.sendFile(__dirname+"/index.html");
+app.get("/", function (req, res) {
+    res.sendFile(__dirname + "/index.html");
 });
-var webServer=app.listen(port);
+var webServer = app.listen(port);
 console.log("Web Server is listening in port " + port);
+
+///////////////////
+//Import Modules
+var usersModule = require('./modules/userModule');
+
+//////////////////////
+// MongoDb Connection
+var myMongoCon = require('./myMongoCon');
+myMongoCon.connectToServer(function (err) {
+    if (err) {
+        console.log("Connection failed");
+    }
+});
+
+/////////////////
+// routes here
+app.post('/registerUser', function (req, res) {
+    //console.log(req.body);
+    usersModule.userRegister(req.body, function (response) {
+        if (response) {
+            //getRegUsers();
+            res.send(response);
+        } else {
+            res.send(false);
+        }
+    });
+});
+app.post('/loginUser', function (req, res) {
+    usersModule.loginUser(req.body, function (response) {
+        if (response) {
+            //getRegUsers();
+            console.log(response);
+            res.send(response);
+        } else {
+            res.send(false);
+        }
+    });
+});
 
 // WebSockets Server
 
@@ -155,8 +196,8 @@ function bcast(socket, tipo, msg) {
     for (var to in rooms[room].userlist) {
         rooms[room].userlist[to].emit(tipo, from, msg);
     }
-
-};
+}
+;
 
 // Send a message
 function send(socket, tipo, to, msg) {
@@ -164,7 +205,8 @@ function send(socket, tipo, to, msg) {
     var from = socket.user;
     if (rooms[room].userlist[to] !== undefined)
         rooms[room].userlist[to].emit(tipo, from, msg);
-};
+}
+;
 
 // Admin broadcasts
 function bcast_admin(socket, to, command) {
@@ -173,4 +215,5 @@ function bcast_admin(socket, to, command) {
     for (var user in rooms[room].userlist) {
         rooms[room].userlist[user].emit('admin', to, command);
     }
-};
+}
+;
