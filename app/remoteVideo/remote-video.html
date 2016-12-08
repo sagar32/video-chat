@@ -1,0 +1,12 @@
+<div id="videos">
+    <div id="videoBackground" ng-repeat="(key,value) in users">
+        <video id="video-{{key}}" autoplay="true" ng-src="{{users[key].video[0]}}" style="" showonhover></video>
+        <div id="videoControlUser" hideonleave>
+            <!--button class="sendFile btn btn-default" ng-click="room.sendFile(key)">
+                    <i class="fa fa-send-o fa-2x"></i>
+            </button-->
+        </div>
+        <div id="videoControlMod" ng-if="room.status.mod">
+        </div>
+    </div>
+</div>

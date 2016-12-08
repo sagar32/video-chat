@@ -1,0 +1,17 @@
+ <div id="bottom">
+        <div id="messageLog"><span ng-repeat="msg in messageLog">[{{msg.time}}] <b>{{msg.user}}</b>: {{msg.msg}}<br/></span></div> 
+        <input id="messageBox" chat-input ng-model='msg' />
+        <div id="localVideoContainer">
+            <video id="localVideo" autoplay="true" muted="true" ng-src="{{localVideo}}" style="{{localVideoTransform}}" showonhover>Your browser does not support HTML5 video.</video>
+            <div id="localControl" hideonleave>
+                <button class="videoMute btn btn-default" ng-click="room.admin('vmute', username)">
+                    <i class="fa fa-eye fa-2x" ng-if="!room.status.vmuted" title="stop image"></i>
+                    <i class="fa fa-eye-slash fa-2x" ng-if="room.status.vmuted" title="send image"></i>
+                </button>
+                <button class="audioMute btn btn-default" ng-click="room.admin('smute', username)">
+                    <i class="fa fa-microphone fa-2x" ng-if="!room.status.smuted" title="stop audio"></i>
+                    <i class="fa fa-microphone-slash fa-2x" ng-if="room.status.smuted" title="send audio"></i>
+                </button>
+            </div>
+        </div>
+    </div>

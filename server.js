@@ -20,6 +20,7 @@ console.log("Web Server is listening in port " + port);
 ///////////////////
 //Import Modules
 var usersModule = require('./modules/userModule');
+var messageStorage = require('./modules/messageStorage');
 
 //////////////////////
 // MongoDb Connection
@@ -55,6 +56,24 @@ app.post('/loginUser', function (req, res) {
     });
 });
 
+app.get('/allUserRightSideList', function (req, res) {
+    usersModule.getUserList(function (allUsers) {
+        if (allUsers)
+            res.send(allUsers);
+    });
+});
+
+app.post('/connectUserRoom', function (req, res) {
+    console.log(req.body);
+    usersModule.connectUserRoom(req.body, function (responce) {
+        if (responce) {
+            res.send(responce);
+        } else {
+            res.send(false);
+        }
+    });
+});
+
 // WebSockets Server
 
 var rooms = {};
@@ -65,7 +84,7 @@ io.sockets.on('connection', function (socket) {
 
     var address = socket.handshake.address;
     // console.log((new Date()) + ' Peer connected: ' + address);
-
+    allRoomMsg(socket);
     socket.on('login', function (user, room) {
 
         // Check illegal character '#'
@@ -217,3 +236,11 @@ function bcast_admin(socket, to, command) {
     }
 }
 ;
+//retirn all room messages
+function allRoomMsg(socket) {
+    messageStorage.getMessage(function (responce) {
+        if (responce) {
+            socket.emit("allRoomMsg", responce);
+        }
+    });
+}

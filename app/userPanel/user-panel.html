@@ -1,0 +1,49 @@
+<div id="panel">
+    <div class="panel panel-primary">
+        <div class="panel-heading"> Users List </div>
+        <div class="panel-body">
+            <!--                <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><i class="action fa fa-user" ng-class="room.status.mod ? 'text-danger' : ''"></i> {{username}}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                            <i class="action fa" ng-class="room.status.smuted ? 'fa-microphone-slash' : 'fa-microphone'" ng-click="room.admin('smute', username)"></i></td><td><i class="action fa" ng-class="room.status.vmuted ? 'fa-eye-slash' : 'fa-eye'" ng-click="room.admin('vmute', username)"></i>
+                                        </td>
+                                    </tr>
+                                    <tr ng-repeat="(key, value) in users">
+                                        <td><i class="action fa fa-user" ng-class="value.status.mod ? 'text-danger' : ''"></i> {{key}}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><i ng-if="room.status.mod" ng-click="room.admin('kick', key)" class="action fa fa-times text-danger"></i></td>
+                                    </tr>
+                                </tbody>
+                            </table>-->
+            <div class="chat-user">
+                <ul class="chat">
+                    <!--- chat user 1 --->
+                    <li  class="left clearfix" ng-repeat="user in allUserList" ng-click="connectUserRoom(user)" ng-class="{'contact_online':(user.roomId == openRoom) && user.roomId}">
+                        <span class="chat-img pull-left">
+                            <img data-ng-src="upload/profilesImg/{{user.profileImg}}" data-err-src="upload/profilesImg/avatar.jpg" alt="User Avatar" class="img-circle" />
+                        </span>
+                        <div class="chat-body clearfix">
+                            <div class="user_title">
+                                <h2> {{user.username}}
+                                    <span class="status">{{onlineStatus.indexOf(user._id) != "-1" ? "online" : "offline"}} <i ng-class="{'online':onlineStatus.indexOf(user._id) != '-1'}" class="fa fa-circle" aria-hidden="true"></i> 
+                                        <small class="block"> <span class="notifi"> 1 </span> </small>
+                                    </span>
+                                </h2>   
+                            </div>
+                            <p> Web Designer </p>
+                        </div>
+                    </li>
+                    <!--- end chat user 1 --->
+
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>

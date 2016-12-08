@@ -1,7 +1,7 @@
 "use strict"
 
 ///////
-// Room
+// TechHive
 
 var techhive = angular.module('TechHive', ['ui.router']);
 
@@ -106,7 +106,10 @@ techhive.config(function ($stateProvider, $urlRouterProvider) {
                 url: '/home',
                 views: {
                     '': {templateUrl: 'app/home/home.html', controller: 'home'},
-                    'header@home': {templateUrl: 'app/header/header.html'}
+                    'header@home': {templateUrl: 'app/header/header.html'},
+                    'userPanel@home': {templateUrl: 'app/userPanel/user-panel.html'},
+                    'messages@home': {templateUrl: 'app/messages/messages.html'},
+                    'remoteVideo@home': {templateUrl: 'app/remoteVideo/remote-video.html'}
                 }
 
 
@@ -181,7 +184,7 @@ techhive.controller('registration', ['$scope', '$http', '$state', function ($sco
 ///////////////////////
 // videoCall Controller
 
-techhive.controller('home', ['$scope', '$window', 'Room', function ($scope, $window, Room) {
+techhive.controller('home', ['$scope', '$window', 'Room', '$http', 'socket', function ($scope, $window, Room, $http, socket) {
         /////////////
         // onlogin success function
         $scope.onLoginSuccess = function () {
@@ -190,28 +193,108 @@ techhive.controller('home', ['$scope', '$window', 'Room', function ($scope, $win
             $scope.activeUsername = JSON.parse($window.localStorage.getItem("isLoginUser"));
             console.log($scope.activeUsername);
 //            socket.emit("updateOnlineStatus", {userId: $scope.activeUsername._id});
-//            socket.on("allUserRightSideList", function (allUsersList) {
-//                $scope.allUserList = allUsersList;
-//                $scope.connectedUser = [];
-////                        console.log($scope.allUserList);
-//                angular.forEach($scope.allUserList, function (value, key) {
-//                    angular.forEach($scope.activeUsername.connectedUser, function (v1, k) {
-//                        socket.emit('openRoom', v1.roomId);
-//                        if (v1.userId == value._id) {
-//                            $scope.allUserList[key].roomId = v1.roomId;
-//                            $scope.connectedUser.push(value);
-//                        }
-//                    });
-//                    if (value._id == $scope.activeUsername._id) {
-//                        index = key;
-//                    }
-//                });
-//                if (index > -1) {
-//                    $scope.allUserList.splice(index, 1);
-//                }
-//            });
+            $http.get("/allUserRightSideList").success(function (allUsersList) {
+                console.log(allUsersList);
+                $scope.allUserList = allUsersList;
+                $scope.connectedUser = [];
+//                        console.log($scope.allUserList);
+                angular.forEach($scope.allUserList, function (value, key) {
+                    angular.forEach($scope.activeUsername.connectedUser, function (v1, k) {
+                        //socket.emit('openRoom', v1.roomId);
+                        if (v1.userId == value._id) {
+                            $scope.allUserList[key].roomId = v1.roomId;
+                            $scope.connectedUser.push(value);
+                        }
+                    });
+                    if (value._id == $scope.activeUsername._id) {
+                        index = key;
+                    }
+                });
+                if (index > -1) {
+                    $scope.allUserList.splice(index, 1);
+                }
+            });
         };
         $scope.onLoginSuccess();
+        $scope.connectUserRoom = function (user) {
+            console.log(user);
+            if (angular.isUndefined(user.roomId)) {
+                $http.post("/connectUserRoom", {me: $scope.activeUsername, with : user}).then(function (data) {
+                    var index = -1;
+                    data = data.data;
+                    console.log(data);
+                    console.log($scope.allUserList);
+                    if (data) {
+                        //socket.emit('openRoom', data);
+                        $scope.switchRoom(data);
+                        $scope.openRoom = data;
+
+                        angular.forEach($scope.allUserList, function (value, key) {
+                            console.log("val: " + value._id + " id: " + user._id);
+                            if (value._id === user._id) {
+//                                console.log("log: "+key);
+                                return index = key;
+                            }
+                        });
+                        if (index > -1) {
+                            $scope.allUserList[index].roomId = data;
+                        }
+                    }
+                    console.log($scope.openRoom);
+                });
+            } else {
+                //socket.emit('openRoom', user.roomId);
+                $scope.openRoom = user.roomId;
+                console.log($scope.openRoom);
+                $scope.switchRoom($scope.openRoom);
+
+            }
+
+
+            $scope.chatWith = user;
+        };
+//switch room on click user
+        $scope.switchRoom = function (roomId) {
+            if (roomId) {
+                $scope.activeMsg = $scope.roomViseMsg[roomId];
+//                            console.log($scope.activeMsg ); 
+            } else {
+                $scope.activeMsg = [];
+            }
+            $timeout(function () {
+                var $chat = $('#chatWindow');
+                //$chat.animate({scrollTop: $chat.prop("scrollHeight")}, 10);
+                var scrollTo_val = $chat.prop('scrollHeight') + 'px';
+                $chat.slimScroll({scrollTo: scrollTo_val});
+            }, 100);
+
+        };
+        //update user list.
+        socket.on('allRoomMsg', function (data) {
+            $scope.allRoomMsg = data;
+            angular.forEach($scope.allRoomMsg, function (value, key) {
+                $scope.roomViseMsg[value.roomId] = value.messages;
+            });
+            $scope.switchRoom($scope.openRoom);
+        });
+        //**********
+        //single message.
+        socket.on('OneRoomMsg', function (data) {
+            if ($scope.roomViseMsg.hasOwnProperty(data.roomId)) {
+                $scope.roomViseMsg[data.roomId].push(data.messages[0]);
+            } else {
+                $scope.roomViseMsg[data.roomId] = data.messages;
+
+            }
+            $scope.switchRoom($scope.openRoom);
+        });
+        //**********
+// logout user
+        $scope.logoutUser = function () {
+            console.log("logout call");
+            $window.localStorage.removeItem("isLoginUser");
+            //socket.disconnect();
+        };
         $scope.$on('localVideo.update', function (e) {
             if (Room.localStream)
                 $scope.localVideo = URL.createObjectURL(Room.localStream);
@@ -264,9 +347,7 @@ techhive.controller('home', ['$scope', '$window', 'Room', function ($scope, $win
 
 
 ////////////
-// Service
-
-
+// Room Service
 techhive.service('Room', ['$rootScope', function ($rootScope) {
 
         navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.getUserMedia;
@@ -627,16 +708,43 @@ techhive.service('Room', ['$rootScope', function ($rootScope) {
                     });
                 });
             }
+
         };
 
         return room;
 
     }])
+        .factory('socket', function ($rootScope) {
+            var socket = io.connect();
+            return {
+                on: function (eventName, callback) {
+                    socket.on(eventName, function () {
+                        var args = arguments;
+                        $rootScope.$apply(function () {
+                            callback.apply(socket, args);
+                        });
+                    });
+                },
+                emit: function (eventName, data, callback) {
+                    socket.emit(eventName, data, function () {
+                        var args = arguments;
+                        $rootScope.$apply(function () {
+                            if (callback) {
+                                callback.apply(socket, args);
+                            }
+                        });
+                    });
+                },
+                disconnect: function () {
 
+                    return socket.disconnect();
+
+                }
+            };
+        })
 
 ///////////////
 // Directives
-
         .directive("chatInput", ['Room', function (Room) {
                 return {
                     link: function (scope, element, attrs) {
@@ -649,7 +757,6 @@ techhive.service('Room', ['$rootScope', function ($rootScope) {
                     }
                 };
             }])
-
         .directive('showonhover', function () {
             return {
                 link: function (scope, element, attrs) {
@@ -659,7 +766,6 @@ techhive.service('Room', ['$rootScope', function ($rootScope) {
                 }
             };
         })
-
         .directive('hideonleave', function () {
             return {
                 link: function (scope, element, attrs) {

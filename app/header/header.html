@@ -1,5 +1,39 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
     <ul class="nav navbar-nav">
-        <li><a href="/">Home</a></li>
+        <li><a href="/"> Techhive Home</a></li>
     </ul>
+<!--    <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
+                    <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li><a href="#">HTML</a></li>
+                    <li><a href="#">CSS</a></li>
+                    <li><a href="#">JavaScript</a></li>
+                </ul>
+            </div>-->
+    <div class="user_profile">
+        <ul class="nav navbar-nav navbar-right">
+            <li class="user-profile">
+
+                <!--<img ng-src="upload/profilesImg/{{activeUsername.profileImg}}">-->
+                <img data-ng-src="upload/profilesImg/{{activeUsername.profileImg}}" data-err-src="upload/profilesImg/avatar.jpg">
+            </li>
+            <li class="user-profile">
+                <a> {{activeUsername.username}} </a>
+            </li>
+            <li class="dropdown">
+                <a  class="dropdown-toggle" data-toggle="dropdown">
+                    <span class="fa fa-bars"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a>Update Profile</a></li>
+                    <li><a ng-click="logoutUser()" class="log-out">Logout</a></li>
+                </ul>
+            </li>
+            
+        </ul>
+
+    </div>
+    </div>
 </div>
