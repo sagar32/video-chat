@@ -3,7 +3,7 @@
 ///////
 // TechHive
 
-var techhive = angular.module('TechHive', ['ui.router']);
+var techhive = angular.module('TechHive', ['ui.router', 'yaru22.angular-timeago']);
 
 ///////////
 // Config
@@ -42,12 +42,12 @@ techhive.run(['$rootScope', '$window', '$state', '$stateParams', function ($root
         $rootScope.loginCheck = function () {
             //check user is login or not
             if ($window.localStorage.getItem("isLoginUser")) {
-                console.log('is login');
+                //console.log('is login');
                 $window.location = "#/home";
 //            $state.go('home');
                 //console.log($window.localStorage.getItem("isLoginUser"));
             } else {
-                console.log('is NOT login');
+                // console.log('is NOT login');
                 $window.location = "#/login";
             }
         }
@@ -56,8 +56,8 @@ techhive.run(['$rootScope', '$window', '$state', '$stateParams', function ($root
             if (toState.url == "/login" || toState.url == "/home") {
                 $rootScope.loginCheck();
             }
-            console.log(toState.url);
-            console.log(toParams);
+//            console.log(toState.url);
+//            console.log(toParams);
 
         });
         //////////
@@ -184,7 +184,11 @@ techhive.controller('registration', ['$scope', '$http', '$state', function ($sco
 ///////////////////////
 // videoCall Controller
 
-techhive.controller('home', ['$scope', '$window', 'Room', '$http', 'socket', function ($scope, $window, Room, $http, socket) {
+techhive.controller('home', ['$scope', '$window', '$timeout', 'Room', '$http', 'socket', function ($scope, $window, $timeout, Room, $http, socket) {
+        //init
+        $scope.message = {};
+        $scope.roomViseMsg = [];
+
         /////////////
         // onlogin success function
         $scope.onLoginSuccess = function () {
@@ -222,25 +226,25 @@ techhive.controller('home', ['$scope', '$window', 'Room', '$http', 'socket', fun
                 $http.post("/connectUserRoom", {me: $scope.activeUsername, with : user}).then(function (data) {
                     var index = -1;
                     data = data.data;
-                    console.log(data);
-                    console.log($scope.allUserList);
-                    if (data) {
-                        //socket.emit('openRoom', data);
-                        $scope.switchRoom(data);
-                        $scope.openRoom = data;
+                    //console.log(data);
+                    //console.log($scope.allUserList);
+                    //if (data.length) {
+                    //socket.emit('openRoom', data);
+                    $scope.openRoom = data;
+                    //console.log($scope.openRoom);
 
-                        angular.forEach($scope.allUserList, function (value, key) {
-                            console.log("val: " + value._id + " id: " + user._id);
-                            if (value._id === user._id) {
+                    angular.forEach($scope.allUserList, function (value, key) {
+                        console.log("val: " + value._id + " id: " + user._id);
+                        if (value._id === user._id) {
 //                                console.log("log: "+key);
-                                return index = key;
-                            }
-                        });
-                        if (index > -1) {
-                            $scope.allUserList[index].roomId = data;
+                            return index = key;
                         }
+                    });
+                    if (index > -1) {
+                        $scope.allUserList[index].roomId = data;
                     }
-                    console.log($scope.openRoom);
+                    //}
+                    $scope.switchRoom($scope.openRoom);
                 });
             } else {
                 //socket.emit('openRoom', user.roomId);
@@ -253,8 +257,13 @@ techhive.controller('home', ['$scope', '$window', 'Room', '$http', 'socket', fun
 
             $scope.chatWith = user;
         };
+        // video call
+        $scope.call=function(){
+            Room.init($scope.activeUsername.username, $scope.openRoom);
+        }
 //switch room on click user
         $scope.switchRoom = function (roomId) {
+            console.log("switch room call");
             if (roomId) {
                 $scope.activeMsg = $scope.roomViseMsg[roomId];
 //                            console.log($scope.activeMsg ); 
@@ -265,21 +274,24 @@ techhive.controller('home', ['$scope', '$window', 'Room', '$http', 'socket', fun
                 var $chat = $('#chatWindow');
                 //$chat.animate({scrollTop: $chat.prop("scrollHeight")}, 10);
                 var scrollTo_val = $chat.prop('scrollHeight') + 'px';
-                $chat.slimScroll({scrollTo: scrollTo_val});
+                //$chat.slimScroll({scrollTo: scrollTo_val});
             }, 100);
 
         };
         //update user list.
         socket.on('allRoomMsg', function (data) {
             $scope.allRoomMsg = data;
+            //console.log($scope.allRoomMsg.length);
             angular.forEach($scope.allRoomMsg, function (value, key) {
                 $scope.roomViseMsg[value.roomId] = value.messages;
             });
             $scope.switchRoom($scope.openRoom);
+
         });
         //**********
         //single message.
         socket.on('OneRoomMsg', function (data) {
+            console.log("oneroom call");
             if ($scope.roomViseMsg.hasOwnProperty(data.roomId)) {
                 $scope.roomViseMsg[data.roomId].push(data.messages[0]);
             } else {
@@ -289,6 +301,14 @@ techhive.controller('home', ['$scope', '$window', 'Room', '$http', 'socket', fun
             $scope.switchRoom($scope.openRoom);
         });
         //**********
+        // send message
+        $scope.sendMsg = function () {
+            console.log("send msg call " + $scope.openRoom + " messag: " + $scope.message.text);
+            if ($scope.isNotEmpty($scope.message.text) && $scope.isNotEmpty($scope.openRoom)) {
+                socket.emit("sendMessage", {msg: $scope.message.text, roomId: $scope.openRoom, id: $scope.activeUsername._id});
+                $scope.message.text = "";
+            }
+        }
 // logout user
         $scope.logoutUser = function () {
             console.log("logout call");
@@ -323,7 +343,7 @@ techhive.controller('home', ['$scope', '$window', 'Room', '$http', 'socket', fun
             e.scrollTop(e[0].scrollHeight);
         });
 
-        //Room.init();
+
 
         $scope.log = function (msg) {
             log('interface', msg);
@@ -379,21 +399,23 @@ techhive.service('Room', ['$rootScope', function ($rootScope) {
             socket: "",
             messageLog: [],
 
-            init: function () {
+            init: function (userName, roomName) {
+                console.log("inint  call: "+userName+" room: "+roomName);
                 if (document.URL.match(/#/g).length !== 1) {
                     var name = prompt("Please enter your user name", "");
                     window.location.href = document.URL + '#' + name;	// Needs to be changed
                 }
-                this.url = document.URL;
-                this.username = document.URL.split('#').pop() || '';
-                this.roomname = document.URL.split('/').pop().split('#')[0];
-                this.socket = io(document.URL.split(this.roomname)[0]);
+                this.url = window.location.host;
+                //console.log(window.location.host);
+                this.username = userName || '';
+                this.roomname = roomName;
+                this.socket = io("http://localhost:4000/");
                 this.status.connected = true;
 
                 // Socket events init
 
                 this.socket.on('connect', function () {
-                    this.emit('login', room.username, room.roomname);
+                    this.emit('connectWithUser', room.username, room.roomname);
                     log('room', 'Room: ' + room.roomname + ', User: ' + room.username);
                 });
 
@@ -773,5 +795,18 @@ techhive.service('Room', ['$rootScope', function ($rootScope) {
                         element.fadeOut();
                     });
                 }
+            };
+        })
+        .directive('myEnter', function () {
+            return function (scope, element, attrs) {
+                element.bind("keydown keypress", function (event) {
+                    if (event.which === 13) {
+                        scope.sendMsg();
+                        scope.$apply(function () {
+                            scope.message = "";
+                        });
+                        event.preventDefault();
+                    }
+                });
             };
         });

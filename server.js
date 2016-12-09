@@ -85,7 +85,13 @@ io.sockets.on('connection', function (socket) {
     var address = socket.handshake.address;
     // console.log((new Date()) + ' Peer connected: ' + address);
     allRoomMsg(socket);
-    socket.on('login', function (user, room) {
+    // send message store
+    socket.on("sendMessage", function (data) {
+        messageStorage.setMessage(data);
+        var time = new Date().getTime();
+        io.sockets.emit("OneRoomMsg", {roomId: data.roomId, messages: [{msg: data.msg, sender: data.id, time: time}]});
+    });
+    socket.on('connectWithUser', function (user, room) {
 
         // Check illegal character '#'
         if ((user.indexOf('#') >= 0) || (room.indexOf('#') >= 0)) {

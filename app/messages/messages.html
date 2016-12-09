@@ -1,17 +1,53 @@
- <div id="bottom">
-        <div id="messageLog"><span ng-repeat="msg in messageLog">[{{msg.time}}] <b>{{msg.user}}</b>: {{msg.msg}}<br/></span></div> 
-        <input id="messageBox" chat-input ng-model='msg' />
-        <div id="localVideoContainer">
-            <video id="localVideo" autoplay="true" muted="true" ng-src="{{localVideo}}" style="{{localVideoTransform}}" showonhover>Your browser does not support HTML5 video.</video>
-            <div id="localControl" hideonleave>
-                <button class="videoMute btn btn-default" ng-click="room.admin('vmute', username)">
-                    <i class="fa fa-eye fa-2x" ng-if="!room.status.vmuted" title="stop image"></i>
-                    <i class="fa fa-eye-slash fa-2x" ng-if="room.status.vmuted" title="send image"></i>
-                </button>
-                <button class="audioMute btn btn-default" ng-click="room.admin('smute', username)">
-                    <i class="fa fa-microphone fa-2x" ng-if="!room.status.smuted" title="stop audio"></i>
-                    <i class="fa fa-microphone-slash fa-2x" ng-if="room.status.smuted" title="send audio"></i>
-                </button>
+<div id="bottom">
+    <!--- chatbox ---->
+    <div class="col-md-8 col-sm-9">
+        <div class="chatbox">
+<!--            <div class="bg-primary"> <h2> Chat </h2> </div>-->
+            <div class="chatbox_panel" ng-if="chatWith">
+                <h2> <span class="title_chat_img pull-left">
+                        <img ng-src="upload/profilesImg/{{chatWith.profileImg}}" alt="User Avatar" class="img-circle" />
+                    </span>  
+                    {{chatWith.username||"..........."}} </h2>
+                <span class="status"> <i ng-class="{'online':onlineStatus.indexOf(chatWith._id) != '-1'}" class="fa fa-circle" aria-hidden="true"></i>{{onlineStatus.indexOf(chatWith._id) != "-1" ? "online" : "offline"}}  </span> 
+                <span class="pull-right" ng-click="call()"><i class="fa fa-video-camera"></i></span>
             </div>
+            <div class="chat_panel" id="chatWindow">
+                <div ng-repeat="msg in activeMsg" ng-class="{'msg1':msg.sender != activeUsername._id,'msg2':msg.sender == activeUsername._id}">
+                    <p ng-bind="msg.msg">  </p>
+                    <small class="pull-right time"><i class="fa fa-clock-o"></i> {{msg.time|timeAgo}}</small>
+                </div>
+
+            </div>
+            <div class="chat_footer">
+                <div class="input-group">
+                    <input type="text" my-enter ng-model="message.text" id="status_message" placeholder="Type a message..." rows="10" cols="40" name="message" 
+                           class="main-searchbox1">
+                    <!--<input id="btn-input" type="text" class="form-control  main-searchbox" placeholder="Type your message here..." />-->
+                    <span class="input-group-btn">
+                        <button ng-click="sendMsg()" class="btn btn-warning btn-lg" id="btn-chat"> <i class="fa fa-paper-plane" aria-hidden="true"></i> </button>
+                    </span>
+                </div>
+            </div>
+
         </div>
     </div>
+    <!--        <div id="messageLog"><span ng-repeat="msg in messageLog">[{{msg.time}}] <b>{{msg.user}}</b>: {{msg.msg}}<br/></span></div> 
+            <input id="messageBox" chat-input ng-model='msg' />-->
+    <div class="col-md-4 col-sm-3">
+
+    </div>
+</div>
+
+<div id="localVideoContainer">
+    <video id="localVideo" autoplay="true" muted="true" ng-src="{{localVideo}}" style="{{localVideoTransform}}" showonhover>Your browser does not support HTML5 video.</video>
+    <div id="localControl" hideonleave>
+        <button class="videoMute btn btn-default" ng-click="room.admin('vmute', username)">
+            <i class="fa fa-eye fa-2x" ng-if="!room.status.vmuted" title="stop image"></i>
+            <i class="fa fa-eye-slash fa-2x" ng-if="room.status.vmuted" title="send image"></i>
+        </button>
+        <button class="audioMute btn btn-default" ng-click="room.admin('smute', username)">
+            <i class="fa fa-microphone fa-2x" ng-if="!room.status.smuted" title="stop audio"></i>
+            <i class="fa fa-microphone-slash fa-2x" ng-if="room.status.smuted" title="send audio"></i>
+        </button>
+    </div>
+</div>

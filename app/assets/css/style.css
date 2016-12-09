@@ -51,13 +51,7 @@ body {
 	margin-top: 10%;
 	text-align: center;
 }
-#bottom {
-	width:100%;
-	height:240px;
-	position: absolute;
-	bottom:0;
-	right:0;
-}
+
 #messageLog {
 	width: -webkit-calc(100% - 320px);
 	height:90%;
@@ -119,9 +113,11 @@ video {
 	line-height: inherit;
 }
 #videos {
-	float: center;
-	display: inline-block;
-	margin: 0 1em 0 1em;
+    border: 1px solid #555;
+    display: inline-block;
+    height: 400px;
+    margin: 6px 15px;
+    width: 600px;
 }
 #videoBackground {
 	float: left;
@@ -129,13 +125,17 @@ video {
 }
 #panel {
 	float: right;
-	margin-right: 20px;
 	height: -webkit-calc(100% - 240px);
 	width: 320px;
-	padding: 20px;
 }
 .action {
 	cursor: pointer;
+}
+#panel .panel { background: rgba(255, 255, 255, 0.28); }
+#panel .panel-body {
+    height: 370px;
+    background: rgba(255, 255, 255, 0.28);
+    overflow: auto;
 }
 
 /*=======================Log in Page===============================*/
@@ -208,7 +208,13 @@ video {
 /*=======================chat main page===============================*/
 .chat-user {
     background: rgba(0, 0, 0, 0.1) none repeat scroll 0 0;
-    margin-top: 40px;
+    margin-top: 0px;
+}
+.panel-heading > h2 {
+    margin: 0;
+}
+.bg-primary > h2 {
+    padding: 6px 12px;
 }
 .chat li { border-bottom: 1px solid rgba(0, 0, 0, 0.6); box-shadow: 0 -2px 0 0 rgba(0, 0, 0, 0.16); padding: 10px 12px 8px; cursor: pointer; }
 .status { float: right; font-size: 13px; text-transform: capitalize; }
@@ -219,7 +225,7 @@ video {
 .chat-body p { font-size: 15px; color: #000; }
 .notifi { background: #ffc000; border-radius: 50%; color: #fff; font-size: 14px; height: 30px; line-height: 20px; padding: 6px; position: absolute; right: 10px; text-align: center; top: 10px; width: 30px; }
 .block { display: block; position: relative; }
-.chatbox { background: rgba(255, 255, 255, 0.28); margin: 40px 15px; }
+.chatbox { background: rgba(255, 255, 255, 0.28); }
 .chatbox_panel > h2 { margin: 0px; font-size: 22px; }
 .title_chat_img .img-circle { height: 50px; width: 50px; border: 2px solid #5E9E27; }
 .chatbox_panel { background: #1772b0 none repeat scroll 0 0; color: #ffffff; display: inline-block; padding: 10px 15px; width: 100%; margin-bottom: 10px; }
@@ -234,7 +240,7 @@ video {
 
 .msg2:after { left: 100%; top: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute; pointer-events: none; border-color: rgba(136, 183, 213, 0); border-left-color: #d9d8d8; border-width: 10px; margin-top: -10px; }
 .msg1:after { right: 100%; top: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute; pointer-events: none; border-color: rgba(136, 183, 213, 0); border-right-color: #d9d8d8; border-width: 10px; margin-top: -10px; }
-.chat_panel { display: inline-block; width: 100% !important; font-family: 'Lato', sans-serif; height: 400px; overflow-x: hidden; overflow-y: auto; }
+.chat_panel { display: inline-block; width: 100% !important; font-family: 'Lato', sans-serif; height: 171px; overflow-x: hidden; overflow-y: auto; }
 .contact_online { background: #1772B0; }
 .chat_panel small { color: #666; font-size: 11px; }
 .flaeQ.pD { display: block; }
