@@ -1,7 +1,7 @@
 body {
 	
-	background:url(../images/bg.jpg) #DDD no-repeat left top;
-	background-size: 100%;
+	background:url(../images/16.jpg) repeat left top;
+	background-size: cover;
 	background-attachment: fixed;
 	padding-top: 51px;
 	-webkit-transition: background 1.5s linear;
@@ -9,6 +9,24 @@ body {
 	-o-transition: background 1.5s linear;
 	-ms-transition: background 1.5s linear;
 	transition: background 1.5s linear;
+}
+/*body::before {
+    background-color: rgba(24, 41, 61, 0.9);
+    bottom: 0;
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+}*/
+.navbar-inverse .navbar-nav > li > a {
+    color: #fff;
+}
+.navbar-inverse {
+    background-color: #1772b0;
+    border-color: #1772b0;
 }
 #content {
 	background-color: rgba(255,255,255,0.7);
@@ -79,15 +97,16 @@ video {
 	right:0;
 }
 #localVideoContainer {
-	position: absolute;
-	bottom:0;
-	right:0;
+    display: inline-block;
+    height: 252px;
+    position: relative;
+    width: 100%;
 }
 #localControl {
 	width:320px;
 	height:240px;
 	background: black;
-	position: absolute;
+	position: relative;
 	bottom:0;
 	right:0;
 	opacity:.5;
@@ -115,9 +134,8 @@ video {
 #videos {
     border: 1px solid #555;
     display: inline-block;
-    height: 400px;
-    margin: 6px 15px;
-    width: 600px;
+    margin-bottom: 15px;
+    width: 100%;
 }
 #videoBackground {
 	float: left;
@@ -250,9 +268,7 @@ video {
 .chatbar a { color: #fff; }
 .chatbar .fa-users { margin: 3px 0px; }
 .chatbar { background: #1772b0 none repeat scroll 0 0; color: #fff; display: inline-block; left: 0; padding: 5px 8px; position: absolute; top: 9px; cursor: pointer; transform: rotate(270deg); display: none; }
- @media only screen and (min-width:1600px) {
-.container-fluid { width: 80%; }
-}
+ 
  @media only screen and (max-width:520px) {
 .chatbar { display: block; }
 .navbar-brand { display: block; width: 100%; }

@@ -1,6 +1,18 @@
-<div class="container">
-<ui-view name="header"></ui-view>
+<ui-view name="header"> </ui-view>
+
+<div class="container" style="margin-top:20px;">
+    <div class="row">
+        <div class="col-md-8 col-sm-7">
+            <ui-view name="remoteVideo"></ui-view>
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <ui-view name="messages"></ui-view>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-5">
+            <ui-view name="userPanel"></ui-view>
+        </div>
+    </div>
+
 </div>
-    <ui-view name="remoteVideo"></ui-view>
-    <ui-view name="userPanel"></ui-view>
-    <ui-view name="messages"></ui-view>

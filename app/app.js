@@ -184,7 +184,7 @@ techhive.controller('registration', ['$scope', '$http', '$state', function ($sco
 ///////////////////////
 // videoCall Controller
 
-techhive.controller('home', ['$scope', '$window', '$timeout', 'Room', '$http', 'socket', function ($scope, $window, $timeout, Room, $http, socket) {
+techhive.controller('home', ['$scope', '$window', '$state', '$timeout', 'Room', '$http', 'socket', function ($scope, $window, $state, $timeout, Room, $http, socket) {
         //init
         $scope.message = {};
         $scope.roomViseMsg = [];
@@ -257,10 +257,21 @@ techhive.controller('home', ['$scope', '$window', '$timeout', 'Room', '$http', '
 
             $scope.chatWith = user;
         };
-        // video call
-        $scope.call=function(){
+// video call
+        $scope.call = function () {
             Room.init($scope.activeUsername.username, $scope.openRoom);
+            Room.calling($scope.openRoom, $scope.chatWith.username,$scope.activeUsername.username);
         }
+        socket.on('calling', function (room, rUser,cUser) {
+            if ($scope.activeUsername.username == rUser) {
+               if(confirm(cUser+" Calling...")){
+                Room.init(rUser, room);
+                console.log("data: " + room + " user: " + rUser);
+               }else{
+                   console.log("No answerd...");
+               }
+            }
+        });
 //switch room on click user
         $scope.switchRoom = function (roomId) {
             console.log("switch room call");
@@ -274,6 +285,7 @@ techhive.controller('home', ['$scope', '$window', '$timeout', 'Room', '$http', '
                 var $chat = $('#chatWindow');
                 //$chat.animate({scrollTop: $chat.prop("scrollHeight")}, 10);
                 var scrollTo_val = $chat.prop('scrollHeight') + 'px';
+                $chat.animate({scrollTop: scrollTo_val}, 1000);
                 //$chat.slimScroll({scrollTo: scrollTo_val});
             }, 100);
 
@@ -313,6 +325,7 @@ techhive.controller('home', ['$scope', '$window', '$timeout', 'Room', '$http', '
         $scope.logoutUser = function () {
             console.log("logout call");
             $window.localStorage.removeItem("isLoginUser");
+            $state.go('login');
             //socket.disconnect();
         };
         $scope.$on('localVideo.update', function (e) {
@@ -368,12 +381,13 @@ techhive.controller('home', ['$scope', '$window', '$timeout', 'Room', '$http', '
 
 ////////////
 // Room Service
-techhive.service('Room', ['$rootScope', function ($rootScope) {
+techhive.service('Room', ['$rootScope', 'socket', function ($rootScope, socket) {
 
         navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.getUserMedia;
         window.RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.RTCPeerConnection;
         window.RTCPSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription;
         window.RTCIceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
+        
 
         var room = {
 
@@ -400,7 +414,7 @@ techhive.service('Room', ['$rootScope', function ($rootScope) {
             messageLog: [],
 
             init: function (userName, roomName) {
-                console.log("inint  call: "+userName+" room: "+roomName);
+                console.log("inint  call: " + userName + " room: " + roomName);
                 if (document.URL.match(/#/g).length !== 1) {
                     var name = prompt("Please enter your user name", "");
                     window.location.href = document.URL + '#' + name;	// Needs to be changed
@@ -409,7 +423,7 @@ techhive.service('Room', ['$rootScope', function ($rootScope) {
                 //console.log(window.location.host);
                 this.username = userName || '';
                 this.roomname = roomName;
-                this.socket = io("http://localhost:4000/");
+                this.socket = io(this.url);
                 this.status.connected = true;
 
                 // Socket events init
@@ -421,15 +435,15 @@ techhive.service('Room', ['$rootScope', function ($rootScope) {
 
                 this.socket.on('userlist', function (list) {
                     if (list.length > 0)
-                        document.body.style.backgroundImage = 'url(bg2.jpg)';
-                    list.map(function (x) {
-                        room.users[x] = {'pc': '', 'streams': [], 'dc': {}, 'stats': {}, 'status': {'muted': false}};
-                    });
+                        //document.body.style.backgroundImage = 'url(bg2.jpg)';
+                        list.map(function (x) {
+                            room.users[x] = {'pc': '', 'streams': [], 'dc': {}, 'stats': {}, 'status': {'muted': false}};
+                        });
                     room.initStream(room.cons.camera);
                 });
 
                 this.socket.on('hello', function (from, data) {
-                    document.body.style.backgroundImage = 'url(bg2.jpg)';
+                    //document.body.style.backgroundImage = 'url(bg2.jpg)';
                     room.userAdd(from);
                 });
 
@@ -450,6 +464,7 @@ techhive.service('Room', ['$rootScope', function ($rootScope) {
 
                 this.socket.on('offer', function (from, data) {
                     log('call', 'Call received: ' + JSON.stringify(data));
+                    //alert("user calling you");
                     if (!room.status.muted)
                         room.users[from].pc.addStream(room.localStream);
                     room.users[from].pc.setRemoteDescription(new RTCSessionDescription(data));
@@ -507,6 +522,10 @@ techhive.service('Room', ['$rootScope', function ($rootScope) {
                     if (room.localStream)
                         room.localStream.stop();
                 });
+            },
+
+            calling: function (roomStr, rUser,cUser) {
+                room.socket.emit('calling', roomStr, rUser,cUser);
             },
 
             userAdd: function (user) {

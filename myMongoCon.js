@@ -1,7 +1,7 @@
 var mongoClient = require('mongodb').MongoClient;
 var _db;
-var URL = 'mongodb://localhost:27017/videoChatDB';
-//var URL = 'mongodb://techhive:techhive@ds145405.mlab.com:45405/techhive';
+//var URL = 'mongodb://192.168.2.22:27017/videoChatDB';
+var URL = 'mongodb://techhive:techhive@ds145405.mlab.com:45405/techhive';
 module.exports = {
     connectToServer: function (callback) {
         mongoClient.connect(URL, function (err, db) {
@@ -10,6 +10,9 @@ module.exports = {
         });
     },
     getDB: function () {
+//        mongoClient.connect(URL, function (err, db) {
+//            return db;
+//        });
         return _db;
     }
 }
