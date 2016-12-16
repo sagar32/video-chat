@@ -3,13 +3,13 @@
     <div class="pull-right">
     <video id="localVideo" autoplay="true" muted="true" ng-src="{{localVideo}}" style="{{localVideoTransform}}" showonhover>Your browser does not support HTML5 video.</video>
     <div id="localControl" hideonleave>
-        <button class="videoMute btn btn-default" ng-click="room.admin('vmute', username)">
-            <i class="fa fa-eye fa-2x" ng-if="!room.status.vmuted" title="stop image"></i>
-            <i class="fa fa-eye-slash fa-2x" ng-if="room.status.vmuted" title="send image"></i>
+        <button class="videoMute btn btn-default" ng-click="room.admin('vmute', activeUsername.username)">
+            <i class="fa fa-eye fa-2x" ng-if="!room.status.vmuted" title="stop video"></i>
+            <i class="fa fa-eye-slash fa-2x" ng-if="room.status.vmuted" title="start video"></i>
         </button>
-        <button class="audioMute btn btn-default" ng-click="room.admin('smute', username)">
+        <button class="audioMute btn btn-default" ng-click="room.admin('smute', activeUsername.username)">
             <i class="fa fa-microphone fa-2x" ng-if="!room.status.smuted" title="stop audio"></i>
-            <i class="fa fa-microphone-slash fa-2x" ng-if="room.status.smuted" title="send audio"></i>
+            <i class="fa fa-microphone-slash fa-2x" ng-if="room.status.smuted" title="start audio"></i>
         </button>
     </div>
     </div>

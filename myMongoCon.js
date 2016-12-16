@@ -10,9 +10,6 @@ module.exports = {
         });
     },
     getDB: function () {
-//        mongoClient.connect(URL, function (err, db) {
-//            return db;
-//        });
         return _db;
     }
 }

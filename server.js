@@ -120,9 +120,9 @@ io.sockets.on('connection', function (socket) {
         bcast(socket, 'hello', '');
         rooms[room].userlist[user] = socket;
         
-        socket.on('calling',function(r,u,c){
+        socket.on('calling',function(r,u,c,cType){
             console.log(r+"___"+u);
-            io.sockets.emit('calling',r,u,c);
+            io.sockets.emit('calling',r,u,c,cType);
         });
         
         socket.on('message', function (data) {
